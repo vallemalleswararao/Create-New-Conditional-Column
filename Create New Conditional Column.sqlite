@@ -1,0 +1,37 @@
+-- Create the table
+CREATE TABLE sales_data (
+    id INT PRIMARY KEY,
+    sales DECIMAL(10, 2),
+    profit DECIMAL(10, 2),
+    ship_mode VARCHAR(50)
+);
+
+-- Insert sample data into the table
+INSERT INTO sales_data (id, sales, profit, ship_mode)
+VALUES
+    (1, 100.50, 20.25, 'Same Day'),
+    (2, 200.75, 50.20, 'First Class'),
+    (3, 150.60, 40.10, 'Standard Class'),
+    (4, 300.25, 70.50, 'Second Class'),
+    (5, 400.35, 100.40, 'Standard Class');
+
+-- Calculate surcharge and total_cost using SQL query
+SELECT 
+    id,
+    sales,
+    profit,
+    ship_mode,
+    CASE 
+        WHEN ship_mode = 'Same Day' THEN 0.2
+        WHEN ship_mode = 'First Class' THEN 0.1
+        WHEN ship_mode = 'Standard Class' THEN 0.05
+        ELSE 0
+    END AS surcharge,
+    (sales - profit) * (1 + 
+        CASE 
+            WHEN ship_mode = 'Same Day' THEN 0.2
+            WHEN ship_mode = 'First Class' THEN 0.1
+            WHEN ship_mode = 'Standard Class' THEN 0.05
+            ELSE 0
+        END) AS total_cost
+FROM sales_data;
